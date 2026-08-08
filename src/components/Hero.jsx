@@ -1,7 +1,72 @@
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight, Sparkles, MessageCircle, Cpu, Zap, Code2, Rocket, Download } from 'lucide-react'
 import ParticleField from './ParticleField'
 import { profile, heroStats } from '../data'
+
+function TerminalTypewriter() {
+  const words = [
+    'Code & Agentic AI',
+    'Autonomous AI Agents & RAG',
+    'High-Throughput Distributed Systems',
+    'Event Streaming & Automation',
+    'Full-Stack Microservices Architecture',
+  ]
+  const [index, setIndex] = useState(0)
+  const [subIndex, setSubIndex] = useState(0)
+  const [reverse, setReverse] = useState(false)
+
+  useEffect(() => {
+    if (subIndex === words[index].length + 1 && !reverse) {
+      const timeout = setTimeout(() => setReverse(true), 2400)
+      return () => clearTimeout(timeout)
+    }
+
+    if (subIndex === 0 && reverse) {
+      setReverse(false)
+      setIndex((prev) => (prev + 1) % words.length)
+      return
+    }
+
+    const timeout = setTimeout(
+      () => {
+        setSubIndex((prev) => prev + (reverse ? -1 : 1))
+      },
+      reverse ? 30 : 65
+    )
+
+    return () => clearTimeout(timeout)
+  }, [subIndex, index, reverse, words])
+
+  return (
+    <div className="mt-6 inline-flex max-w-full flex-col items-center rounded-2xl border border-cyan/30 bg-slate-950/90 p-4 sm:p-6 shadow-glow-cyan backdrop-blur-xl transition-all duration-300 hover:border-cyan/60">
+      {/* Terminal Window Controls Bar */}
+      <div className="flex w-full items-center justify-between border-b border-white/10 pb-3 mb-4 px-1 gap-4">
+        <div className="flex items-center gap-2">
+          <span className="h-3 w-3 rounded-full bg-red-500/90" />
+          <span className="h-3 w-3 rounded-full bg-yellow-500/90" />
+          <span className="h-3 w-3 rounded-full bg-green-500/90" />
+        </div>
+        <span className="font-mono text-xs font-medium text-slate-400 tracking-wider">
+          bash ~ pritom.dev/stack
+        </span>
+        <span className="rounded-full bg-cyan/10 px-2.5 py-0.5 font-mono text-[10px] text-cyan border border-cyan/30 font-semibold">
+          LIVE DEMO
+        </span>
+      </div>
+
+      {/* Terminal Typing Prompt */}
+      <div className="flex flex-wrap items-center justify-center gap-2.5 font-mono text-xl sm:text-2xl lg:text-3xl text-left leading-snug">
+        <span className="text-purple-400 font-bold">$</span>
+        <span className="text-slate-300 font-medium">with</span>
+        <span className="gradient-text font-extrabold text-cyan text-glow-cyan">
+          "{words[index].substring(0, subIndex)}"
+        </span>
+        <span className="inline-block h-6 w-3 bg-cyan animate-pulse shadow-glow-cyan align-middle ml-1" />
+      </div>
+    </div>
+  )
+}
 
 export default function Hero() {
   return (
@@ -49,8 +114,15 @@ export default function Hero() {
             className="text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-6xl lg:text-7xl"
           >
             Engineering the Future
-            <span className="block gradient-text text-glow-cyan">with Code & AI</span>
           </motion.h1>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.7 }}
+          >
+            <TerminalTypewriter />
+          </motion.div>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}

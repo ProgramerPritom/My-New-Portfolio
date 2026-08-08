@@ -10,6 +10,7 @@ export const profile = {
   location: 'Dhaka, Bangladesh',
   phone: '01767026831',
   education: 'BSc in Computer Science & Engineering · DIU (2022–2026)',
+  avatar: '/Personal-Photo.png',
   cvUrl: 'https://drive.google.com/uc?export=download&id=1PnHEYsV7LeFLyqDr3aGtU2lZyd3wnx4u',
   cvDriveUrl: 'https://drive.google.com/file/d/1PnHEYsV7LeFLyqDr3aGtU2lZyd3wnx4u/view?usp=drive_link',
   socials: {
