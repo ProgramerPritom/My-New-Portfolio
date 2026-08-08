@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    @apply bg-obsidian text-slate-300 font-sans overflow-x-hidden;
+  }
+
+  ::selection {
+    @apply bg-cyan/30 text-white;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-obsidian;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-700 rounded-full border-2 border-obsidian;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-cyan/60;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  }
+
+  .glass-strong {
+    @apply bg-white/[0.07] backdrop-blur-2xl border border-white/10;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-[linear-gradient(90deg,#8B5CF6,#06B6D4,#10B981,#8B5CF6)] bg-[length:300%_auto] animate-gradient-x;
+  }
+
+  .section-shell {
+    @apply relative mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+
+  .btn-glow {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-300;
+  }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+
+  .cosmic-bg {
+    background:
+      radial-gradient(1100px 700px at 15% -10%, rgba(139, 92, 246, 0.28), transparent 60%),
+      radial-gradient(1000px 650px at 85% 10%, rgba(6, 182, 212, 0.22), transparent 60%),
+      radial-gradient(900px 800px at 50% 110%, rgba(16, 185, 129, 0.16), transparent 60%),
+      linear-gradient(180deg, #0B1020 0%, #0F172A 40%, #0B1026 100%);
+  }
+
+  .aurora {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(90px);
+    pointer-events: none;
+  }
+
+  .glow-ring {
+    position: relative;
+  }
+  .glow-ring::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(120deg, #8B5CF6, #06B6D4, #10B981);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+  .glow-ring:hover::before {
+    opacity: 1;
+  }
+
+  .neural-bg {
+    background-image:
+      radial-gradient(circle at center, rgba(139, 92, 246, 0.5) 1px, transparent 1.5px),
+      radial-gradient(circle at center, rgba(6, 182, 212, 0.5) 1px, transparent 1.5px);
+    background-size: 26px 26px, 26px 26px;
+    background-position: 0 0, 13px 13px;
+  }
+}
+
+@layer utilities {
+  .text-glow-cyan {
+    text-shadow: 0 0 18px rgba(6, 182, 212, 0.55);
+  }
+  .text-glow-purple {
+    text-shadow: 0 0 18px rgba(139, 92, 246, 0.55);
+  }
+  .text-glow-emerald {
+    text-shadow: 0 0 18px rgba(16, 185, 129, 0.55);
+  }
+}
