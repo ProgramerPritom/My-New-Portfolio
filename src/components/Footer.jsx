@@ -17,7 +17,7 @@ export default function Footer() {
               <Terminal className="h-4 w-4 text-white" strokeWidth={2.2} />
             </span>
             <span className="text-sm font-bold text-white">
-              {profile.name.split(' ')[0]}
+              Pritom
               <span className="text-cyan">.</span>
               <span className="text-slate-400">dev</span>
             </span>
@@ -40,8 +40,9 @@ export default function Footer() {
 
           <div className="flex items-center gap-3">
             <motion.a
-              href="/cv.pdf"
-              download
+              href={profile.cvDriveUrl}
+              target="_blank"
+              rel="noreferrer"
               aria-label="Download CV"
               whileHover={{ y: -6, rotate: -6 }}
               transition={{ type: 'spring', stiffness: 400, damping: 12 }}
@@ -68,10 +69,7 @@ export default function Footer() {
 
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/5 pt-6 text-xs text-slate-500 sm:flex-row">
           <p>© {new Date().getFullYear()} {profile.name}. All rights reserved.</p>
-          <p className="flex items-center gap-1.5">
-            Designed & built with <Heart className="h-3.5 w-3.5 fill-cyan text-cyan animate-pulse" /> React,
-            Tailwind & Framer Motion
-          </p>
+
         </div>
       </div>
     </footer>

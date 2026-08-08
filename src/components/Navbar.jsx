@@ -47,7 +47,7 @@ export default function Navbar() {
             <Terminal className="h-4 w-4 text-white" strokeWidth={2.2} />
           </span>
           <span className="hidden text-sm font-bold tracking-wide text-white sm:block">
-            {profile.name.split(' ')[0]}
+            Pritom
             <span className="text-cyan">.</span>
             <span className="text-slate-400">dev</span>
           </span>
@@ -73,8 +73,9 @@ export default function Navbar() {
           ))}
           <li className="ml-1">
             <a
-              href="/cv.pdf"
-              download
+              href={profile.cvDriveUrl}
+              target="_blank"
+              rel="noreferrer"
               className="btn-glow glass-strong px-4 py-2 text-sm text-white hover:-translate-y-0.5 hover:border-cyan/50"
               aria-label="Download CV"
             >
@@ -136,8 +137,9 @@ export default function Navbar() {
                   className="mt-2 border-t border-white/10 pt-3"
                 >
                   <a
-                    href="/cv.pdf"
-                    download
+                    href={profile.cvDriveUrl}
+                    target="_blank"
+                    rel="noreferrer"
                     onClick={() => setOpen(false)}
                     className="flex items-center justify-between rounded-xl px-4 py-3 text-base font-medium text-cyan transition-colors hover:bg-cyan/10"
                   >

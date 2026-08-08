@@ -150,8 +150,9 @@ export default function Profile() {
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-4">
                 <a
-                  href="/cv.pdf"
-                  download
+                  href={profile.cvDriveUrl}
+                  target="_blank"
+                  rel="noreferrer"
                   className="btn-glow group bg-gradient-to-r from-purple via-cyan to-emerald bg-[length:200%_auto] px-6 py-3 text-sm text-white shadow-glow-purple transition-all duration-500 hover:bg-[position:100%_0] hover:-translate-y-0.5"
                 >
                   Download CV

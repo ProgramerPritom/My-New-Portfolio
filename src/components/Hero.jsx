@@ -85,8 +85,9 @@ export default function Hero() {
               Connect
             </a>
             <a
-              href="/cv.pdf"
-              download
+              href={profile.cvDriveUrl}
+              target="_blank"
+              rel="noreferrer"
               className="btn-glow glass px-8 py-3.5 text-sm text-white hover:border-emerald/50 hover:shadow-glow-emerald hover:-translate-y-1"
             >
               <Download className="h-4 w-4 text-emerald" />
