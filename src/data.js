@@ -266,6 +266,19 @@ export const marqueeSkills = [
 
 export const projects = [
   {
+    title: 'CruiseOS BD — Enterprise Cruise Operations OS',
+    category: 'Maritime Hospitality Platform',
+    problem: 'River cruise operators were managing high-volume voyages with phone bookings, spreadsheets, paper tickets, and disconnected onboard kitchens.',
+    solution: 'Built a cloud-native, multi-role platform for distributed seat locking, multi-deck vessel mapping, kitchen dispatch, cryptographic boarding, idempotent payments, and AI-assisted trip operations.',
+    tags: ['React 19', 'Node.js', 'PostgreSQL', 'Upstash Redis', 'Prisma', 'Gemini RAG'],
+    accent: 'emerald',
+    span: 'lg',
+    metrics: 'Enterprise Platform',
+    image: '/CruiseOS.png',
+    liveUrl: 'https://ferry-kitchen-boarding.vercel.app/',
+    github: 'https://github.com/ProgramerPritom/FerryKitchen-boarding',
+  },
+  {
     title: 'B2B GTM Agent & Microservices Engine',
     category: 'AI & Microservices',
     problem: 'Enterprise clients needed automated AI agents to enrich CRM accounts, run LinkedIn prospecting, and trigger VideoSDK calling.',
