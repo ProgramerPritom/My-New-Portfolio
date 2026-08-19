@@ -11,8 +11,8 @@ export const profile = {
   phone: '01767026831',
   education: 'BSc in Computer Science & Engineering · DIU (2022–2026)',
   avatar: '/Personal-Photo.png',
-  cvUrl: 'https://drive.google.com/file/d/1MvnCANVqOMgc6o52hM55TMnrH8f1JCs1/view?usp=sharing',
-  cvDriveUrl: 'https://drive.google.com/file/d/1MvnCANVqOMgc6o52hM55TMnrH8f1JCs1/view?usp=sharing',
+  cvUrl: 'https://drive.google.com/file/d/1MIHo6o3_L6QHCkfFj-bcg60C32FAe6sk/view?usp=drive_link',
+  cvDriveUrl: 'https://drive.google.com/file/d/1MIHo6o3_L6QHCkfFj-bcg60C32FAe6sk/view?usp=drive_link',
   socials: {
     github: 'https://github.com/ProgramerPritom',
     linkedin: 'https://www.linkedin.com/in/badruzzamanpritom',
