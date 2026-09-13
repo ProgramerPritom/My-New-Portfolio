@@ -1,168 +1,189 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Palette, Server, BrainCircuit, Check, Briefcase, CalendarRange } from 'lucide-react'
+import {
+  Briefcase,
+  Calendar,
+  MapPin,
+  CheckCircle2,
+  FileDown,
+  Copy,
+  Check,
+  ListFilter,
+  Eye,
+  ArrowUpRight,
+} from 'lucide-react'
 import SectionHeader from './SectionHeader'
-import { journey } from '../data'
-
-const icons = [Palette, Server, BrainCircuit]
-
-const accentStyles = {
-  cyan: {
-    node: 'bg-gradient-to-br from-cyan to-purple shadow-glow-cyan',
-    chip: 'border-cyan/30 bg-cyan/10 text-cyan',
-    bar: 'from-cyan to-purple',
-    glow: 'group-hover:shadow-glow-cyan',
-    connector: 'bg-gradient-to-r from-cyan/60 to-transparent',
-    connectorR: 'bg-gradient-to-l from-cyan/60 to-transparent',
-  },
-  purple: {
-    node: 'bg-gradient-to-br from-purple to-emerald shadow-glow-purple',
-    chip: 'border-purple/30 bg-purple/10 text-purple',
-    bar: 'from-purple to-emerald',
-    glow: 'group-hover:shadow-glow-purple',
-    connector: 'bg-gradient-to-r from-purple/60 to-transparent',
-    connectorR: 'bg-gradient-to-l from-purple/60 to-transparent',
-  },
-  emerald: {
-    node: 'bg-gradient-to-br from-emerald to-cyan shadow-glow-emerald',
-    chip: 'border-emerald/30 bg-emerald/10 text-emerald',
-    bar: 'from-emerald to-cyan',
-    glow: 'group-hover:shadow-glow-emerald',
-    connector: 'bg-gradient-to-r from-emerald/60 to-transparent',
-    connectorR: 'bg-gradient-to-l from-emerald/60 to-transparent',
-  },
-}
+import { careerTimeline, profile } from '../data'
 
 export default function Journey() {
+  const [viewMode, setViewMode] = useState('visual') // 'visual' | 'ats'
+  const [copiedResume, setCopiedResume] = useState(false)
+
+  const handleCopyAtsText = () => {
+    const plainText = careerTimeline
+      .map(
+        (item) =>
+          `${item.role} — ${item.company} (${item.period})\nLocation: ${item.location}\n` +
+          item.achievements.map((a) => `• ${a}`).join('\n')
+      )
+      .join('\n\n')
+
+    navigator.clipboard.writeText(plainText)
+    setCopiedResume(true)
+    setTimeout(() => setCopiedResume(false), 2000)
+  }
+
   return (
-    <section id="journey" className="relative py-24 sm:py-32">
-      <div className="absolute left-0 top-1/4 h-96 w-96 rounded-full bg-purple/10 blur-[140px]" aria-hidden="true" />
-      <div className="absolute right-0 bottom-1/4 h-80 w-80 rounded-full bg-cyan/10 blur-[130px]" aria-hidden="true" />
+    <section id="timeline" className="relative py-20 sm:py-28 overflow-hidden">
       <div className="section-shell">
-        <SectionHeader
-          kicker="Career Evolution"
-          title="The Road I've Traveled"
-          subtitle="Three phases, one continuous evolution — from crafting UIs to building intelligent systems."
-        />
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div>
+            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-cyan-400">
+              // Career Trajectory & Scope
+            </span>
+            <h2 className="mt-2 text-3xl sm:text-4xl font-black text-white tracking-tight">
+              Experience & Proven Achievements
+            </h2>
+            <p className="mt-2 text-sm sm:text-base text-slate-400 max-w-2xl">
+              Framed around measurable outcomes, architectural ownership, and systems shipped to
+              production.
+            </p>
+          </div>
 
-        <div className="relative mx-auto max-w-5xl">
-          {/* Central Vertical Timeline Bar */}
-          <motion.div
-            initial={{ scaleY: 0 }}
-            whileInView={{ scaleY: 1 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 1.4, ease: 'easeInOut' }}
-            className="absolute left-6 top-0 h-full w-[3px] origin-top rounded-full bg-gradient-to-b from-emerald via-cyan to-purple shadow-glow-cyan md:left-1/2 md:-translate-x-1/2"
-          />
+          {/* Mode Switcher & Resume Action */}
+          <div className="flex flex-wrap items-center gap-3">
+            <div
+              role="tablist"
+              aria-label="Timeline display mode"
+              className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/5 p-1"
+            >
+              <button
+                type="button"
+                role="tab"
+                aria-selected={viewMode === 'visual'}
+                onClick={() => setViewMode('visual')}
+                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                  viewMode === 'visual'
+                    ? 'bg-cyan-500 text-black font-semibold shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Eye className="h-3.5 w-3.5" />
+                <span>Visual Timeline</span>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={viewMode === 'ats'}
+                onClick={() => setViewMode('ats')}
+                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                  viewMode === 'ats'
+                    ? 'bg-cyan-500 text-black font-semibold shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <ListFilter className="h-3.5 w-3.5" />
+                <span>Plain ATS / Text View</span>
+              </button>
+            </div>
 
-          <div className="space-y-12 md:space-y-16">
-            {journey.map((item, i) => {
-              const styles = accentStyles[item.accent] || accentStyles.cyan
-              const Icon = icons[i] || Briefcase
-              const leftSide = i % 2 === 0
-
-              return (
-                <motion.article
-                  key={item.phase}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-60px' }}
-                  transition={{ duration: 0.6, ease: 'easeOut' }}
-                  className="relative flex items-start pl-14 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-8 md:pl-0"
-                >
-                  {/* LEFT SIDE: Card if leftSide, else Icon Badge */}
-                  <div className="hidden w-full md:flex md:items-center md:justify-end">
-                    {leftSide ? (
-                      <div className="relative w-full">
-                        <Card item={item} styles={styles} />
-                      </div>
-                    ) : (
-                      <IconBadge Icon={Icon} styles={styles} label={item.phase} />
-                    )}
-                  </div>
-
-                  {/* CENTER NODE: Glowing Dot on Center Line */}
-                  <div className="absolute left-[24px] top-8 z-10 h-3.5 w-3.5 -translate-x-1/2 rounded-full border-2 border-slate-900 bg-white shadow-glow-cyan md:relative md:left-auto md:top-auto md:translate-x-0">
-                    <span className="absolute -inset-1 animate-ping rounded-full bg-cyan/40 opacity-75" />
-                  </div>
-
-                  {/* RIGHT SIDE: Card if !leftSide, else Icon Badge */}
-                  <div className="w-full md:flex md:items-center md:justify-start">
-                    {!leftSide ? (
-                      <div className="relative w-full">
-                        <Card item={item} styles={styles} />
-                      </div>
-                    ) : (
-                      <div className="hidden md:block">
-                        <IconBadge Icon={Icon} styles={styles} label={item.phase} />
-                      </div>
-                    )}
-                  </div>
-                </motion.article>
-              )
-            })}
+            <a
+              href={profile.cvDriveUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-2 text-xs font-semibold text-emerald-300 hover:bg-emerald-500/20 transition-colors"
+            >
+              <FileDown className="h-4 w-4" />
+              <span>Download PDF</span>
+            </a>
           </div>
         </div>
+
+        {/* Dynamic Display: Visual Timeline vs Plain ATS Text View */}
+        {viewMode === 'visual' ? (
+          <div className="relative mx-auto max-w-4xl">
+            {/* Center line */}
+            <div className="absolute left-4 sm:left-6 top-4 bottom-4 w-[2px] bg-gradient-to-b from-cyan-500 via-purple-500 to-emerald-500" />
+
+            {/* Semantic Ordered List for Accessibility */}
+            <ol className="space-y-10">
+              {careerTimeline.map((item, idx) => (
+                <li key={idx} className="relative pl-12 sm:pl-16">
+                  {/* Timeline Dot Node */}
+                  <div className="absolute left-[11px] sm:left-[19px] top-6 h-3.5 w-3.5 -translate-x-1/2 rounded-full border-2 border-[#080C14] bg-cyan-400 shadow-sm shadow-cyan-400" />
+
+                  {/* Card Content */}
+                  <div className="rounded-2xl border border-white/10 bg-[#0B101B]/80 p-6 sm:p-7 backdrop-blur-md transition-all hover:border-white/20">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold text-cyan-400">
+                          {item.company}
+                        </span>
+                        <span className="text-slate-500">•</span>
+                        <span className="text-xs text-slate-400">{item.location}</span>
+                      </div>
+                      <span className="font-mono text-xs text-slate-400 border border-white/5 bg-white/5 px-2.5 py-0.5 rounded-md">
+                        {item.period}
+                      </span>
+                    </div>
+
+                    <h3 className="mt-3 text-lg sm:text-xl font-bold text-white tracking-tight">
+                      {item.role}
+                    </h3>
+
+                    {/* Measurable Achievements */}
+                    <ul className="mt-4 space-y-2.5">
+                      {item.achievements.map((achieve, ai) => (
+                        <li key={ai} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                          <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400 mt-0.5" />
+                          <span>{achieve}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ) : (
+          /* Plain ATS / Text Resume View */
+          <div className="rounded-3xl border border-white/10 bg-[#060A11] p-6 sm:p-8 font-mono text-xs sm:text-sm">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+              <span className="text-slate-400 font-semibold">
+                Clean ATS Text Format (Ready for copy & paste)
+              </span>
+              <button
+                type="button"
+                onClick={handleCopyAtsText}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-white hover:bg-white/10 transition-colors"
+              >
+                {copiedResume ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                <span>{copiedResume ? 'Copied to Clipboard!' : 'Copy Plain Text'}</span>
+              </button>
+            </div>
+
+            <div className="space-y-8 text-slate-300">
+              {careerTimeline.map((item, idx) => (
+                <div key={idx} className="space-y-2">
+                  <p className="text-white font-bold text-base">
+                    {item.role} — {item.company}
+                  </p>
+                  <p className="text-slate-400 text-xs">
+                    {item.period} | Location: {item.location} | {item.type}
+                  </p>
+                  <ul className="pl-4 space-y-1 text-slate-300">
+                    {item.achievements.map((achieve, ai) => (
+                      <li key={ai} className="list-disc leading-relaxed">
+                        {achieve}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
-  )
-}
-
-function IconBadge({ Icon, styles, label }) {
-  return (
-    <motion.div
-      initial={{ scale: 0 }}
-      whileInView={{ scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ delay: 0.2, type: 'spring', stiffness: 260, damping: 18 }}
-      className="flex items-center gap-3"
-    >
-      <div className={`relative grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-800 ${styles.node} shadow-lg`}>
-        <Icon className="h-6 w-6 text-white" />
-        <span className="absolute -inset-1 animate-pulse rounded-2xl bg-white/10" />
-      </div>
-      <span className="font-mono text-xs uppercase tracking-widest text-slate-400">
-        {label}
-      </span>
-    </motion.div>
-  )
-}
-
-function Card({ item, styles }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 25 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ delay: 0.15, duration: 0.5 }}
-      className={`group relative rounded-3xl glass p-6 transition-all duration-300 hover:-translate-y-1 hover:border-white/30 sm:p-7 ${styles.glow}`}
-    >
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[11px] tracking-wider ${styles.chip}`}>
-          <CalendarRange className="h-3 w-3" />
-          {item.period}
-        </span>
-        <span className="font-mono text-[11px] uppercase tracking-widest text-slate-500">
-          {item.phase}
-        </span>
-      </div>
-
-      <h3 className="mt-4 text-xl font-bold text-white sm:text-2xl">{item.title}</h3>
-      <p className="mt-1.5 flex items-center gap-2 text-sm font-medium text-slate-400">
-        <Briefcase className={`h-4 w-4 ${styles.chip.split(' ')[1]}`} />
-        {item.company}
-      </p>
-      <p className="mt-3 text-sm leading-relaxed text-slate-400">{item.description}</p>
-
-      <ul className="mt-4 space-y-2.5">
-        {item.highlights.map((h) => (
-          <li key={h} className="flex items-start gap-2.5 text-sm text-slate-300">
-            <span className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-white/5 ${styles.chip}`}>
-              <Check className="h-3 w-3" />
-            </span>
-            {h}
-          </li>
-        ))}
-      </ul>
-    </motion.div>
   )
 }

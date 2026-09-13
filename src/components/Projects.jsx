@@ -1,187 +1,345 @@
-import { motion } from 'framer-motion'
-import { ArrowUpRight, Github, FolderGit2, TrendingUp, TriangleAlert, Lightbulb } from 'lucide-react'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  ArrowUpRight,
+  Github,
+  AlertCircle,
+  CheckCircle2,
+  GitFork,
+  Layers,
+  Cpu,
+  RefreshCw,
+  Compass,
+  ChevronDown,
+  ChevronUp,
+  Sparkles,
+  Filter,
+} from 'lucide-react'
 import SectionHeader from './SectionHeader'
-import { projects } from '../data'
+import { allProjects } from '../data'
 
-const cardStyles = {
-  cyan: {
-    visual: 'from-cyan/25 via-cyan/5 to-transparent',
-    accent: 'text-cyan',
-    chip: 'border-cyan/30 bg-cyan/10 text-cyan',
-    glow: 'group-hover:shadow-glow-cyan',
-    line: 'bg-cyan',
-  },
-  purple: {
-    visual: 'from-purple/25 via-purple/5 to-transparent',
-    accent: 'text-purple',
-    chip: 'border-purple/30 bg-purple/10 text-purple',
-    glow: 'group-hover:shadow-glow-purple',
-    line: 'bg-purple',
-  },
-  emerald: {
-    visual: 'from-emerald/25 via-emerald/5 to-transparent',
-    accent: 'text-emerald',
-    chip: 'border-emerald/30 bg-emerald/10 text-emerald',
-    glow: 'group-hover:shadow-glow-emerald',
-    line: 'bg-emerald',
-  },
-}
-
-function VisualMock({ project }) {
-  const accent = project.accent
-  return (
-    <div
-      className="relative h-52 overflow-hidden rounded-2xl border border-white/10 bg-slate-950 shadow-2xl sm:h-64"
-    >
-      {/* Browser Bar */}
-      <div className="flex items-center justify-between border-b border-white/10 bg-slate-900/90 px-4 py-2 backdrop-blur-md">
-        <div className="flex gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
-          <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/80" />
-          <span className="h-2.5 w-2.5 rounded-full bg-green-500/80" />
-        </div>
-        <span className="truncate font-mono text-[10px] text-slate-400 max-w-[200px]">
-          {project.liveUrl && project.liveUrl.startsWith('http')
-            ? project.liveUrl.replace('https://', '').replace('http://', '').replace(/\/$/, '')
-            : project.title}
-        </span>
-        <span className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] ${cardStyles[accent].chip}`}>
-          {accent.toUpperCase()}
-        </span>
-      </div>
-
-      {/* Real Image Preview */}
-      {project.image ? (
-        <div className="relative h-[calc(100%-33px)] w-full overflow-hidden bg-slate-950">
-          <img
-            src={project.image}
-            alt={project.title}
-            className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent opacity-60 group-hover:opacity-20 transition-opacity" />
-        </div>
-      ) : (
-        <div className={`relative h-full overflow-hidden bg-gradient-to-br ${cardStyles[accent].visual}`}>
-          <div className="absolute bottom-4 left-4 right-4 space-y-2.5">
-            <div className={`h-2 w-2/3 rounded-full ${cardStyles[accent].line} opacity-70`} />
-            <div className="h-2 w-1/2 rounded-full bg-white/15" />
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
+const categories = ['All Projects', 'AI & Vector Systems', 'Full-Stack Web', 'Distributed Systems']
 
 export default function Projects() {
+  const [selectedCategory, setSelectedCategory] = useState('All Projects')
+  const [expandedProjectId, setExpandedProjectId] = useState(allProjects[0].id)
+  const [showAllProjects, setShowAllProjects] = useState(false)
+
+  const DEFAULT_VISIBLE = 3
+
+  const toggleProject = (id) => {
+    setExpandedProjectId((prev) => (prev === id ? null : id))
+  }
+
+  const filteredProjects = selectedCategory === 'All Projects'
+    ? allProjects
+    : allProjects.filter((p) => {
+        if (selectedCategory === 'AI & Vector Systems') {
+          return p.category.includes('AI') || p.category.includes('Vector')
+        }
+        if (selectedCategory === 'Full-Stack Web') {
+          return p.category.includes('Full-Stack') || p.category.includes('EdTech') || p.category.includes('Creative') || p.category.includes('Maritime')
+        }
+        if (selectedCategory === 'Distributed Systems') {
+          return p.category.includes('Distributed') || p.category.includes('Maritime')
+        }
+        return true
+      })
+
+  const displayedProjects = showAllProjects
+    ? filteredProjects
+    : filteredProjects.slice(0, DEFAULT_VISIBLE)
+
   return (
-    <section id="work" className="relative py-24 sm:py-32">
-      <div className="absolute left-0 top-1/3 h-96 w-96 rounded-full bg-purple/10 blur-[140px]" aria-hidden="true" />
+    <section id="work" className="relative py-20 sm:py-28 overflow-hidden">
       <div className="section-shell">
         <SectionHeader
-          kicker="Selected Work"
-          title="Shipped & Making Impact"
-          subtitle="A bento grid of production apps, RAG learning platforms, microservices & automation architectures."
+          kicker="// Portfolio Showcase"
+          title="All Production Projects & Systems"
+          subtitle={`Showing ${showAllProjects ? allProjects.length : Math.min(DEFAULT_VISIBLE, allProjects.length)} of ${allProjects.length} flagship platforms, maritime OS architectures, RAG systems, and web engines. Every project includes live verification links, problem-solution breakdowns, and architectural insights.`}
         />
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          {projects.map((project, i) => (
-            <motion.article
-              key={project.title}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.6, delay: (i % 3) * 0.12 }}
-              whileHover={{ y: -8 }}
-              className={`group relative flex flex-col overflow-hidden rounded-3xl glass transition-all duration-300 hover:border-white/25 ${
-                cardStyles[project.accent].glow
-              } ${project.span === 'lg' ? 'lg:col-span-2' : ''}`}
+        {/* Interactive Category Filter Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => {
+                setSelectedCategory(cat)
+                setShowAllProjects(false)
+              }}
+              className={`rounded-xl px-4 py-2 text-xs font-semibold tracking-wide transition-all ${
+                selectedCategory === cat
+                  ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/25 font-bold'
+                  : 'border border-white/10 bg-white/5 text-slate-300 hover:border-white/20 hover:text-white'
+              }`}
             >
-              <div className="p-4 pb-0">
-                <div className="overflow-hidden rounded-2xl transition-transform duration-500">
-                  <VisualMock project={project} />
-                </div>
-              </div>
-
-              <div className="relative flex flex-1 flex-col p-6">
-                <div className="flex items-center justify-between gap-3">
-                  <span className={`font-mono text-[11px] font-semibold uppercase tracking-widest ${cardStyles[project.accent].accent}`}>
-                    {project.category}
-                  </span>
-                  <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium text-emerald">
-                    <TrendingUp className="h-3 w-3" />
-                    {project.metrics}
-                  </div>
-                </div>
-
-                <h3 className="mt-3 text-lg font-bold leading-snug text-white sm:text-xl">{project.title}</h3>
-
-                <div className="mt-4 space-y-3">
-                  <div className="flex items-start gap-3 rounded-2xl border border-red-400/15 bg-red-400/5 p-3.5">
-                    <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0 text-red-300/80" />
-                    <p className="text-xs leading-relaxed text-slate-400">
-                      <span className="font-semibold text-slate-300">Problem — </span>
-                      {project.problem}
-                    </p>
-                  </div>
-                  <div className="flex items-start gap-3 rounded-2xl border border-emerald/20 bg-emerald/5 p-3.5">
-                    <Lightbulb className={`mt-0.5 h-4 w-4 shrink-0 ${cardStyles[project.accent].accent}`} />
-                    <p className="text-xs leading-relaxed text-slate-400">
-                      <span className="font-semibold text-slate-300">Solution — </span>
-                      {project.solution}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-mono text-[11px] text-slate-300 transition-colors duration-300 group-hover:border-white/20"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="mt-6 flex flex-wrap items-center gap-3 pt-4 sm:mt-auto">
-                  {project.liveUrl && project.liveUrl.startsWith('http') && (
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn-glow flex-1 bg-gradient-to-r from-purple via-cyan to-emerald bg-[length:200%_auto] px-5 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-glow-purple transition-all duration-500 hover:bg-[position:100%_0] hover:-translate-y-0.5"
-                    >
-                      Live Preview
-                      <ArrowUpRight className="h-4 w-4" />
-                    </a>
-                  )}
-                  {project.github ? (
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn-glow glass-strong px-5 py-2.5 text-xs sm:text-sm font-medium text-white hover:-translate-y-0.5"
-                    >
-                      <Github className="h-4 w-4 text-cyan" />
-                      Code
-                    </a>
-                  ) : (
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-purple/30 bg-purple/10 px-4 py-2 font-mono text-[11px] text-purple-300">
-                      Enterprise Private
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <span
-                className={`pointer-events-none absolute -right-3 -top-3 grid h-14 w-14 place-items-center rounded-2xl border border-white/10 bg-white/5 text-slate-500 transition-all duration-300 group-hover:rotate-12 ${cardStyles[project.accent].accent}`}
-                aria-hidden="true"
-              >
-                <FolderGit2 className="h-6 w-6" />
-              </span>
-            </motion.article>
+              {cat}
+            </button>
           ))}
         </div>
+
+        {/* All Projects Grid */}
+        <div className="space-y-12">
+          {displayedProjects.map((project, index) => {
+            const isExpanded = expandedProjectId === project.id
+
+            return (
+              <motion.div
+                key={project.id}
+                layout
+                initial={{ opacity: 0, y: 25 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.08 }}
+                className="overflow-hidden rounded-3xl border border-white/10 bg-[#0B101B]/90 shadow-2xl transition-all hover:border-white/20"
+              >
+                {/* Case Study Top Bar */}
+                <div className="p-6 sm:p-8 border-b border-white/10 bg-[#080D16]/90">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-xs font-bold text-cyan-400 border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 rounded-md">
+                        PROJECT 0{index + 1}
+                      </span>
+                      <span className="font-mono text-xs text-slate-400">
+                        {project.client} • {project.period}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <span className="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-3 py-1 font-mono text-xs font-semibold text-emerald-300">
+                        {project.outcomeMetric}
+                      </span>
+                    </div>
+                  </div>
+
+                  <h3 className="mt-4 text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                    {project.title}
+                  </h3>
+                  <p className="mt-2 text-base text-slate-300 max-w-3xl leading-relaxed">
+                    {project.tagline}
+                  </p>
+
+                  {/* Tech Stack Pills & Action CTAs */}
+                  <div className="mt-6 flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-white/5">
+                    <div className="flex flex-wrap gap-1.5">
+                      {project.techStack.map((tech) => (
+                        <span
+                          key={tech}
+                          className="font-mono text-[11px] rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-slate-300"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      {project.liveUrl && (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-xl bg-cyan-500 px-4 py-2 text-xs font-bold text-black hover:bg-cyan-400 transition-colors shadow-sm"
+                        >
+                          <span>Live Site</span>
+                          <ArrowUpRight className="h-3.5 w-3.5" />
+                        </a>
+                      )}
+                      {project.githubUrl ? (
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-xs font-medium text-white hover:bg-white/10 transition-colors"
+                        >
+                          <Github className="h-3.5 w-3.5" />
+                          <span>Code Repo</span>
+                        </a>
+                      ) : (
+                        <span className="font-mono text-[11px] text-slate-500 border border-white/10 px-3 py-1.5 rounded-xl bg-white/[0.02]">
+                          🔒 Enterprise Codebase
+                        </span>
+                      )}
+                      {project.process && (
+                        <button
+                          type="button"
+                          onClick={() => toggleProject(project.id)}
+                          className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-slate-300 hover:text-white"
+                        >
+                          <span>{isExpanded ? 'Collapse' : 'Deep Dive'}</span>
+                          {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Flagship Body: Visual + Structured Breakdown */}
+                <div className="p-6 sm:p-8">
+                  <div className="grid lg:grid-cols-12 gap-8 items-start">
+                    {/* Left: Project Visual Preview */}
+                    <div className="lg:col-span-5 rounded-2xl overflow-hidden border border-white/10 bg-[#06090F] shadow-lg">
+                      <div className="flex items-center justify-between px-3 py-2 border-b border-white/10 bg-[#0B101B]">
+                        <div className="flex items-center gap-1.5">
+                          <span className="h-2 w-2 rounded-full bg-red-500/80" />
+                          <span className="h-2 w-2 rounded-full bg-yellow-500/80" />
+                          <span className="h-2 w-2 rounded-full bg-green-500/80" />
+                        </div>
+                        <span className="font-mono text-[10px] text-slate-500 truncate max-w-[200px]">
+                          {project.liveUrl || `${project.id}.production`}
+                        </span>
+                      </div>
+                      <div className="relative aspect-video overflow-hidden bg-slate-950">
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="h-full w-full object-cover object-top transition-transform duration-700 hover:scale-105"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Right: Problem & Solution Summary */}
+                    <div className="lg:col-span-7 space-y-4">
+                      {/* Problem Block */}
+                      <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4">
+                        <div className="flex items-center gap-2 font-mono text-xs font-bold text-red-400">
+                          <AlertCircle className="h-4 w-4" />
+                          <span>The Challenge & Friction</span>
+                        </div>
+                        <p className="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                          {project.problem}
+                        </p>
+                      </div>
+
+                      {/* Solution Block */}
+                      <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+                        <div className="flex items-center gap-2 font-mono text-xs font-bold text-emerald-400">
+                          <CheckCircle2 className="h-4 w-4" />
+                          <span>Engineered Architecture & Solution</span>
+                        </div>
+                        <p className="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                          {project.solution}
+                        </p>
+                      </div>
+
+                      {/* Constraints */}
+                      {project.constraints && (
+                        <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+                          <p className="font-mono text-xs font-bold text-slate-300 uppercase tracking-wider">
+                            Engineering Constraints
+                          </p>
+                          <ul className="mt-2 space-y-1.5">
+                            {project.constraints.map((c, ci) => (
+                              <li key={ci} className="text-xs text-slate-400 flex items-start gap-2">
+                                <span className="text-cyan-400 font-bold">•</span>
+                                <span>{c}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Deep Dive Collapsible Section: Abandoned Approach, Architecture Flow & Reflection */}
+                  <AnimatePresence>
+                    {isExpanded && project.process && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="mt-8 pt-8 border-t border-white/10 space-y-6"
+                      >
+                        {/* The Approach Tried and Abandoned */}
+                        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-5">
+                          <div className="flex items-center gap-2 font-mono text-xs font-bold text-amber-300 uppercase tracking-wider">
+                            <Compass className="h-4 w-4 text-amber-400" />
+                            <span>Architecture Process & Abandoned Path (What didn't work)</span>
+                          </div>
+                          <p className="mt-2.5 text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+                            {project.process}
+                          </p>
+                        </div>
+
+                        {/* Interactive Architecture Flow Diagram */}
+                        {project.architectureFlow && (
+                          <div className="rounded-2xl border border-white/10 bg-[#06090F] p-5">
+                            <div className="flex items-center gap-2 font-mono text-xs font-bold text-cyan-400 uppercase tracking-wider">
+                              <Layers className="h-4 w-4" />
+                              <span>System Architecture Pipeline</span>
+                            </div>
+
+                            <div className="mt-4 flex flex-wrap items-center gap-2 font-mono text-xs">
+                              {project.architectureFlow.map((step, si) => (
+                                <div key={si} className="flex items-center gap-2">
+                                  <span className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-1.5 text-cyan-200">
+                                    {step}
+                                  </span>
+                                  {si < project.architectureFlow.length - 1 && (
+                                    <span className="text-slate-500 font-bold">→</span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* What I'd Do Differently (Reflection) */}
+                        {project.whatIdDoDifferently && (
+                          <div className="rounded-2xl border border-purple-500/20 bg-purple-500/5 p-5">
+                            <div className="flex items-center gap-2 font-mono text-xs font-bold text-purple-300 uppercase tracking-wider">
+                              <RefreshCw className="h-4 w-4 text-purple-400" />
+                              <span>Post-Mortem: What I'd Do Differently</span>
+                            </div>
+                            <p className="mt-2.5 text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+                              {project.whatIdDoDifferently}
+                            </p>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            )
+          })}
+        </div>
+        
+        {/* View More / Show Less Projects Toggle Button */}
+        {filteredProjects.length > DEFAULT_VISIBLE && (
+          <div className="mt-14 flex justify-center">
+            <button
+              type="button"
+              onClick={() => {
+                if (showAllProjects) {
+                  setShowAllProjects(false)
+                  const el = document.getElementById('work')
+                  if (el) el.scrollIntoView({ behavior: 'smooth' })
+                } else {
+                  setShowAllProjects(true)
+                }
+              }}
+              className="group relative inline-flex items-center gap-3 rounded-2xl border border-cyan-500/40 bg-gradient-to-r from-cyan-950/70 via-[#0C1222] to-purple-950/70 px-8 py-4 text-sm font-bold text-white shadow-xl shadow-cyan-950/50 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-cyan-400 hover:shadow-cyan-500/25 active:scale-[0.98]"
+            >
+              <span className="relative z-10 flex items-center gap-2.5">
+                {showAllProjects ? (
+                  <>
+                    <span>Show Less Projects</span>
+                    <ChevronUp className="h-4 w-4 text-cyan-400 transition-transform duration-300 group-hover:-translate-y-1" />
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4 text-cyan-400 animate-pulse" />
+                    <span>View More Projects ({filteredProjects.length - DEFAULT_VISIBLE} more)</span>
+                    <ChevronDown className="h-4 w-4 text-cyan-400 transition-transform duration-300 group-hover:translate-y-1" />
+                  </>
+                )}
+              </span>
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500/20 to-purple-500/20 opacity-0 blur transition-opacity duration-300 group-hover:opacity-100" />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   )

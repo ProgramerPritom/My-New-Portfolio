@@ -1,198 +1,221 @@
-import { motion } from 'framer-motion'
-import { Sparkles, Layers, BrainCircuit, Target, Quote, FileDown } from 'lucide-react'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Sparkles, FileText, CheckCircle2, ChevronRight, BookOpen, Clock } from 'lucide-react'
 import SectionHeader from './SectionHeader'
-import { profile, profileHighlights } from '../data'
-
-const highlightIcons = [Layers, BrainCircuit, Target]
-
-const floatingBadges = [
-  { label: 'React', className: 'left-0 top-8 text-cyan border-cyan/40 shadow-glow-cyan', delay: 0 },
-  { label: 'Node.js', className: 'right-0 top-1/3 text-purple border-purple/40 shadow-glow-purple', delay: 0.6 },
-  { label: 'AI Agents', className: 'left-2 bottom-10 text-emerald border-emerald/40 shadow-glow-emerald', delay: 1.2 },
-]
-
-const neuralNodes = [
-  { x: 20, y: 18 }, { x: 52, y: 10 }, { x: 80, y: 24 }, { x: 34, y: 40 },
-  { x: 64, y: 46 }, { x: 18, y: 66 }, { x: 50, y: 74 }, { x: 82, y: 62 },
-  { x: 38, y: 88 }, { x: 70, y: 90 }, { x: 88, y: 12 }, { x: 12, y: 42 },
-]
-
-function Portrait() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: -40 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.7, ease: 'easeOut' }}
-      className="relative mx-auto w-full max-w-sm lg:max-w-none"
-    >
-      <div className="neural-bg absolute inset-4 rounded-full opacity-60" aria-hidden="true" />
-
-      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" aria-hidden="true">
-        <defs>
-          <linearGradient id="neural-line" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#8B5CF6" />
-            <stop offset="100%" stopColor="#06B6D4" />
-          </linearGradient>
-        </defs>
-        {[
-          [0, 1], [1, 2], [1, 4], [2, 3], [3, 7], [4, 5], [4, 11],
-          [5, 6], [6, 9], [7, 8], [8, 9], [9, 10], [10, 5], [3, 10],
-        ].map(([a, b], i) => (
-          <motion.line
-            key={i}
-            x1={neuralNodes[a].x}
-            y1={neuralNodes[a].y}
-            x2={neuralNodes[b].x}
-            y2={neuralNodes[b].y}
-            stroke="url(#neural-line)"
-            strokeWidth="0.25"
-            initial={{ pathLength: 0, opacity: 0 }}
-            whileInView={{ pathLength: 1, opacity: 0.5 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3 + i * 0.06 }}
-          />
-        ))}
-        {neuralNodes.map((n, i) => (
-          <motion.circle
-            key={i}
-            cx={n.x}
-            cy={n.y}
-            r="1.3"
-            fill={i % 3 === 0 ? '#8B5CF6' : i % 3 === 1 ? '#06B6D4' : '#10B981'}
-            initial={{ opacity: 0, scale: 0 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 + i * 0.05 }}
-          />
-        ))}
-      </svg>
-
-      <motion.div
-        animate={{ y: [0, -12, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-        className="relative mx-auto aspect-square w-4/5 overflow-hidden rounded-full border-2 border-cyan/40 p-1.5 shadow-glow-cyan"
-      >
-        <div className="relative h-full w-full overflow-hidden rounded-full border border-white/20 bg-slate-900">
-          {profile.avatar ? (
-            <img
-              src={profile.avatar}
-              alt={profile.name}
-              className="h-full w-full object-cover object-center transition-transform duration-700 hover:scale-105"
-            />
-          ) : (
-            <div className="absolute inset-0 grid place-items-center">
-              <div className="flex h-40 w-40 flex-col items-center justify-center rounded-full border border-white/20 bg-white/5 backdrop-blur-sm sm:h-48 sm:w-48">
-                <span className="text-3xl font-black tracking-tight text-white sm:text-5xl">
-                  {profile.firstName[0]}
-                  <span className="gradient-text">P</span>
-                </span>
-                <span className="mt-1 font-mono text-[10px] uppercase tracking-[0.25em] text-slate-300">
-                  Full-Stack · AI
-                </span>
-              </div>
-            </div>
-          )}
-          <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-obsidian/90 to-transparent" />
-        </div>
-      </motion.div>
-
-      <div className="absolute -inset-2 -z-10 rounded-full bg-gradient-to-br from-purple/40 via-transparent to-cyan/40 blur-2xl" aria-hidden="true" />
-
-      {floatingBadges.map((badge) => (
-        <motion.span
-          key={badge.label}
-          initial={{ opacity: 0, scale: 0 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5 + badge.delay, type: 'spring', stiffness: 200 }}
-          className={`absolute rounded-full border bg-obsidian/80 px-3.5 py-1.5 text-xs font-semibold backdrop-blur-xl ${badge.className}`}
-        >
-          <motion.span
-            animate={{ y: [0, -7, 0] }}
-            transition={{ duration: 4.5 + badge.delay, repeat: Infinity, ease: 'easeInOut' }}
-            className="inline-block"
-          >
-            {badge.label}
-          </motion.span>
-        </motion.span>
-      ))}
-    </motion.div>
-  )
-}
+import { profile } from '../data'
 
 export default function Profile() {
+  const [viewMode, setViewMode] = useState('short') // 'short' | 'full'
+
   return (
-    <section id="about" className="relative py-24 sm:py-32">
-      <div className="absolute right-0 top-1/4 h-96 w-96 rounded-full bg-purple/10 blur-[140px]" aria-hidden="true" />
+    <section id="about" className="relative py-20 sm:py-28 overflow-hidden">
       <div className="section-shell">
         <SectionHeader
-          kicker="About Me"
-          title="The Engineer Behind the Vision"
-          subtitle="A systems architect turned intelligent automation specialist."
+          kicker="// About & Engineering Philosophy"
+          title="The Story Behind the Systems"
+          subtitle="Moving past resume bullet dumps: how I transitioned from computer science fundamentals to autonomous production AI."
         />
 
-        <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
-          <Portrait />
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+          {/* Left Column: Portrait & Credibility Sidebar */}
+          <div className="lg:col-span-5 flex flex-col gap-6">
+            {/* Real Photo Card with Floating Animated Badges */}
+            <div className="relative">
+              {/* Floating animated chips */}
+              <motion.span
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute -left-3 top-6 z-20 rounded-full border border-cyan-500/40 bg-[#080C14]/90 px-3 py-1 text-[11px] font-mono font-semibold text-cyan-300 shadow-lg shadow-cyan-950/50 backdrop-blur-md"
+              >
+                ⚛️ React & Next.js
+              </motion.span>
+              <motion.span
+                animate={{ y: [0, 9, 0] }}
+                transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                className="absolute -right-3 top-1/3 z-20 rounded-full border border-purple-500/40 bg-[#080C14]/90 px-3 py-1 text-[11px] font-mono font-semibold text-purple-300 shadow-lg shadow-purple-950/50 backdrop-blur-md"
+              >
+                ⚡ Kafka & Microservices
+              </motion.span>
+              <motion.span
+                animate={{ y: [0, -7, 0] }}
+                transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                className="absolute left-6 -bottom-3 z-20 rounded-full border border-emerald-500/40 bg-[#080C14]/90 px-3 py-1 text-[11px] font-mono font-semibold text-emerald-300 shadow-lg shadow-emerald-950/50 backdrop-blur-md"
+              >
+                🤖 Autonomous RAG
+              </motion.span>
 
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.7, ease: 'easeOut' }}
-          >
-            <div className="relative rounded-3xl glass p-6 sm:p-8">
-              <Quote className="absolute -top-4 left-6 h-8 w-8 text-purple" aria-hidden="true" />
-              <p className="text-lg leading-relaxed text-slate-200 sm:text-xl">{profile.bio}</p>
-              <p className="mt-4 flex items-center gap-2 text-sm text-slate-400">
-                <Sparkles className="h-4 w-4 text-emerald" />
-                {profile.role}
-              </p>
-              <div className="mt-6 flex flex-wrap items-center gap-4">
-                <a
-                  href={profile.cvDriveUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn-glow group bg-gradient-to-r from-purple via-cyan to-emerald bg-[length:200%_auto] px-6 py-3 text-sm text-white shadow-glow-purple transition-all duration-500 hover:bg-[position:100%_0] hover:-translate-y-0.5"
-                >
-                  Download CV
-                  <FileDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
-                </a>
-                <a
-                  href="#journey"
-                  className="group text-sm font-medium text-slate-300 transition-colors hover:text-white"
-                >
-                  See my journey
-                  <span className="ml-1 inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-                </a>
+              <div className="relative overflow-hidden rounded-3xl border border-white/15 bg-[#0B101B] p-2 shadow-2xl glow-ring">
+                <div className="relative aspect-[4/4.5] overflow-hidden rounded-2xl bg-slate-900">
+                  <img
+                    src={profile.avatar || '/Personal-Photo.png'}
+                    alt="Badruzzaman Pritom — Full-Stack & AI Systems Engineer"
+                    onError={(e) => {
+                      e.currentTarget.src = '/Personal-Photo.png'
+                    }}
+                    className="h-full w-full object-cover object-center transition-transform duration-700 hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#080C14] via-transparent to-transparent opacity-70" />
+                  <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                    <div>
+                      <p className="font-bold text-white text-base">{profile.name}</p>
+                      <p className="text-xs text-cyan-400 font-mono">{profile.role}</p>
+                    </div>
+                    <span className="rounded-full bg-emerald-500/20 px-2.5 py-1 text-[10px] font-mono font-medium text-emerald-300 border border-emerald-500/30">
+                      🟢 Active
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="mt-8 space-y-4">
-              {profileHighlights.map((item, i) => {
-                const Icon = highlightIcons[i]
-                return (
+            {/* Sidebar Credibility Markers */}
+            <div className="grid grid-cols-2 gap-3">
+              {profile.credibilityMarkers.map((marker, i) => (
+                <div
+                  key={i}
+                  className="rounded-2xl border border-white/10 bg-[#0B101B]/80 p-4 transition-all hover:border-cyan-500/30"
+                >
+                  <p className="gradient-accent text-2xl font-black">{marker.value}</p>
+                  <p className="mt-1 text-xs font-semibold text-white">{marker.label}</p>
+                  <p className="mt-0.5 text-[11px] text-slate-400 leading-tight">
+                    {marker.detail}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Column: Narrative Prose with Short vs. Full Story Toggle */}
+          <div className="lg:col-span-7 flex flex-col">
+            {/* Short vs. Full Toggle Switch */}
+            <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+              <span className="font-mono text-xs uppercase tracking-wider text-slate-400">
+                Reading Mode:
+              </span>
+              <div
+                role="tablist"
+                aria-label="Biography view format"
+                className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/5 p-1"
+              >
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={viewMode === 'short'}
+                  aria-controls="bio-content-short"
+                  onClick={() => setViewMode('short')}
+                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                    viewMode === 'short'
+                      ? 'bg-cyan-500 text-black font-semibold shadow-sm'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <Clock className="h-3.5 w-3.5" />
+                  <span>The 30-Sec Summary</span>
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={viewMode === 'full'}
+                  aria-controls="bio-content-full"
+                  onClick={() => setViewMode('full')}
+                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                    viewMode === 'full'
+                      ? 'bg-cyan-500 text-black font-semibold shadow-sm'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <BookOpen className="h-3.5 w-3.5" />
+                  <span>The Full Story</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Prose Content Area */}
+            <div className="rounded-3xl border border-white/10 bg-[#0B101B]/60 p-6 sm:p-8 backdrop-blur-md">
+              <AnimatePresence mode="wait">
+                {viewMode === 'short' ? (
                   <motion.div
-                    key={item.title}
-                    initial={{ opacity: 0, x: 30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.15 * i, duration: 0.5 }}
-                    whileHover={{ x: 6 }}
-                    className="group flex items-start gap-4 rounded-2xl glass p-5 transition-colors duration-300 hover:border-purple/40"
+                    key="short"
+                    id="bio-content-short"
+                    role="tabpanel"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.25 }}
+                    className="space-y-4 text-slate-300 leading-relaxed text-base sm:text-lg"
                   >
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-purple/30 bg-purple/10 text-purple transition-transform duration-300 group-hover:scale-110">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    <div>
-                      <h4 className="font-semibold text-white">{item.title}</h4>
-                      <p className="mt-1 text-sm leading-relaxed text-slate-400">{item.text}</p>
+                    <p>
+                      I’m <strong className="text-white font-semibold">Badruzzaman Pritom</strong>,
+                      a <span className="text-cyan-300 font-medium">Full-Stack & AI Systems Engineer</span> with
+                      over 3 years of production experience shipping scalable platforms, autonomous
+                      RAG pipelines, and distributed event architectures.
+                    </p>
+                    <p>
+                      Currently at <strong className="text-white">Glow Radius</strong>, I architect
+                      intelligent tool-calling agent runtimes, CRM automation engines, and
+                      microservice brokers. My builds combine modern web frameworks (
+                      <span className="text-slate-200">React, Next.js, Node.js</span>) with resilient
+                      asynchronous backends (<span className="text-purple-300">Kafka, Redis, BullMQ</span>) and
+                      vector search (<span className="text-emerald-300">Pinecone, LangChain</span>).
+                    </p>
+                    <p className="text-slate-400 text-sm">
+                      ⚡ I design systems for measurable business ROI: eliminating hundreds of hours of
+                      manual operations while sustaining low-latency performance at scale.
+                    </p>
+
+                    <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+                      <span className="text-xs font-mono text-slate-500">
+                        Want the full trajectory? Switch to "The Full Story".
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setViewMode('full')}
+                        className="inline-flex items-center gap-1 font-mono text-xs text-cyan-400 hover:underline"
+                      >
+                        Read chapters →
+                      </button>
                     </div>
                   </motion.div>
-                )
-              })}
+                ) : (
+                  <motion.div
+                    key="full"
+                    id="bio-content-full"
+                    role="tabpanel"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.25 }}
+                    className="space-y-8"
+                  >
+                    {profile.fullStory.map((chapter) => (
+                      <div key={chapter.step} className="relative pl-6 border-l border-white/15">
+                        <span className="absolute -left-[9px] top-0 h-4 w-4 rounded-full border-2 border-[#0B101B] bg-cyan-400" />
+                        <span className="font-mono text-xs font-semibold text-cyan-400">
+                          {chapter.step}
+                        </span>
+                        <h4 className="text-base sm:text-lg font-bold text-white mt-0.5">
+                          {chapter.title}
+                        </h4>
+                        <div className="mt-2 space-y-2 text-sm sm:text-base text-slate-300 leading-relaxed">
+                          {chapter.paragraphs.map((p, pi) => (
+                            <p
+                              key={pi}
+                              dangerouslySetInnerHTML={{
+                                __html: p.replace(
+                                  /\*\*(.*?)\*\*/g,
+                                  '<strong class="text-white font-semibold">$1</strong>'
+                                ),
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
